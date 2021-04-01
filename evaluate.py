@@ -28,6 +28,7 @@ def evaluate(args, model, data):
         batch.in_train = False
         inputs = batch.to(args.device)
 
+        # todo: change evaluation
         with torch.no_grad():
             pred = model(inputs, args)
             pred = list(pred.cpu().numpy())
@@ -38,6 +39,8 @@ def evaluate(args, model, data):
             else:
                 targets.extend(list(inputs.labels.cpu().numpy()))
     preds = np.array(preds)
+
+
     precision, recall, score = get_prf(targets, preds.tolist())
 
     return score, [list(item) for item in zip(ids, preds.tolist(), targets)]

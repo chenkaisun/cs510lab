@@ -4,13 +4,15 @@ from train_utils import *
 
 from utils import dump_file, load_file, get_tokenizer
 from evaluate import evaluate
-
+from options import *
 
 torch.backends.cudnn.benchmark = False
 torch.backends.cudnn.deterministic = True
 
 if __name__ == '__main__':
     args = read_args()
+
+    # todo: preset everything in options.py that stay the same for this experiment, like below
     data_dir = "data/"
     train_file = data_dir + "train.txt"
     val_file = data_dir + "dev.txt"
@@ -18,6 +20,8 @@ if __name__ == '__main__':
     args.model_name = "baseline"
     args.exp = ""
     args.plm = "allenai/scibert_scivocab_uncased"
+
+    # can run on local computer
     if args.debug:
         args.plm = "prajjwal1/bert-tiny"
 
@@ -31,7 +35,7 @@ if __name__ == '__main__':
                                       OurDataset(args, val_file, tokenizer), \
                                       OurDataset(args, test_file, tokenizer)
 
-    # set up optimizer and model, move to gpu, set up logger
+    # set up optimizer and model, move to gpu, set up loggers
     args, model, optimizer = setup_common(args)
     if args.analyze:
         model.load_state_dict(torch.load(args.model_path)['model_state_dict'])

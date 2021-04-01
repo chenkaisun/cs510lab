@@ -3,7 +3,6 @@ import pickle as pkl
 import json
 import numpy as np
 import requests
-from numba import jit
 from transformers import AutoTokenizer
 
 def request_get(url, headers):
@@ -22,7 +21,6 @@ def request_get(url, headers):
 
 
 
-@jit(nopython=True)
 def is_symmetric(g):
     return np.sum(np.abs(g.T - g)) == 0
 

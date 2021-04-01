@@ -3,12 +3,14 @@ import os
 import torch
 from torch.utils.data import Dataset
 
-class OurDataset(Dataset):
-    """Face Landmarks dataset."""
 
-    def __init__(self, args, filename, tokenizer=None, modal_retriever=None):
+# todo: load dataset
+class OurDataset(Dataset):
+
+    def __init__(self, args, filename, tokenizer=None):
         args.cache_filename = os.path.splitext(filename)[0] + ".pkl"
 
+        # Can cache data
         if args.use_cache and os.path.exists(args.cache_filename):
             print("Loading Cached Data...", args.cache_filename)
             data = load_file(args.cache_filename)
@@ -28,6 +30,7 @@ class OurDataset(Dataset):
     def __getitem__(self, idx):
         return self.instances[idx]
 
+# todo: collate batch and send to gpu (like below)
 class CustomBatch:
     def __init__(self, batch):
         # Collating
@@ -48,7 +51,7 @@ class CustomBatch:
 
         tokenizer = batch[0]["tokenizer"]
 
-        g_data = Batch.from_data_list([f["ent"][0]['g'] for f in batch])
+        g_data = from_data_list([f["ent"][0]['g'] for f in batch])
         g_data.x = torch.as_tensor(g_data.x, dtype=torch.long)
         self.ent1_g = g_data
         self.ent1_g_mask = torch.tensor([f["ent"][0]['g_mask'] for f in batch]).unsqueeze(-1)

@@ -18,10 +18,11 @@ from torch.utils.tensorboard import SummaryWriter
 from utils import dump_file, mkdir
 from IPython import embed
 
+
 def train(args, model, optimizer, data):
     train_data, val_data, test_data = data
 
-
+    # turn on debug to see anomaly like nan
     if args.debug:
         torch.autograd.set_detect_anomaly(True)
         # train_data = train_data.instances[:4]
@@ -43,11 +44,10 @@ def train(args, model, optimizer, data):
     total_steps = int(len(train_loader) * args.num_epochs)
     warmup_steps = int(total_steps * args.warmup_ratio)
 
-    scheduler=None
+    scheduler = None
     if args.scheduler:
         scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=warmup_steps,
                                                     num_training_steps=total_steps)
-
 
         # scheduler = CosineAnnealingLR(optimizer, T_max=(int(args.num_epochs) // 4) + 1, eta_min=0)
 
@@ -71,22 +71,13 @@ def train(args, model, optimizer, data):
             # logger.debug(f"Step {step}")
             num_steps += 1
 
-            if args.exp == "mol_pred":
-
-                encoded_input = batch[0]  # tokenizer(batch[0])
-                # print("encoded_input", encoded_input)
-                inputs = {'input_ids': {key: encoded_input[key].to(args.device) for key in encoded_input},
-                          'batch_graph_data': batch[1].to(args.device),
-                          'ids': batch[2],
-                          'in_train': True,
-                          }
-
-            else:
-                inputs = batch.to(args.device)
+            batch.in_train = True
+            inputs = batch.to(args.device)
 
             # model learning
             model.train()
 
+            # Mixed Precision (Faster)
             if args.use_amp:
                 with torch.cuda.amp.autocast():
                     loss = model(inputs, args)
@@ -111,7 +102,6 @@ def train(args, model, optimizer, data):
                         scheduler.step()
                     optimizer.zero_grad()
             total_loss += loss.item()
-
 
         val_score, output = evaluate(args, model, val_data)
 
@@ -146,11 +136,14 @@ def train(args, model, optimizer, data):
     test_score, output = evaluate(args, model, test_data)
 
     logger.debug(f"Test Score {test_score}")
-    writer.add_scalar('test', test_score, 0)
 
+
+    # for tensorboard
+    writer.add_scalar('test', test_score, 0)
     writer.add_hparams(
         {'batch_size': args.batch_size, 'num_epochs': args.num_epochs,
-         'plm_lr': args.plm_lr, 'lr': args.lr, 'max_grad_norm': args.max_grad_norm, 'dropout': args.dropout, 'model_type': args.model_type,
-        },
+         'plm_lr': args.plm_lr, 'lr': args.lr, 'max_grad_norm': args.max_grad_norm, 'dropout': args.dropout,
+         'model_type': args.model_type,
+         },
         {'hparam/test': test_score, 'hparam/val': best_val_score})
     writer.close()

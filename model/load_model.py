@@ -12,7 +12,7 @@ def get_model(args):
 def load_model_from_path(model, optimizer, args):
     model_epoch, best_dev_score = 0, -float("inf")
 
-    if False:  # os.path.isfile(model_path):
+    if False:  # os.path.isfile(model_path): # not used for now
         print("Saved model found")
         saved_model_info = torch.load(model_path)
         model.load_state_dict(saved_model_info['model_state_dict'])

@@ -9,7 +9,7 @@ def read_args():
     parser.add_argument("--max_seq_len", default=1024, type=int)
 
     # experiment
-    parser.add_argument("--model_name", default="", type=str)
+    parser.add_argument("--model_name", default="baseline", type=str)
     parser.add_argument("--model_path", default="model/states/best_dev.pt", type=str)
     parser.add_argument("--experiment_path", default="experiment/", type=str)
     parser.add_argument("--exp", default="bio", type=str)
@@ -23,15 +23,15 @@ def read_args():
     parser.add_argument("--train_file", default="data/property_pred/clintox.csv", type=str)
     parser.add_argument("--val_file", default="dev.json", type=str)
     parser.add_argument("--test_file", default="test.json", type=str)
-    parser.add_argument("--cache_filename", default="data/property_pred/clintox.pkl", type=str)
+    parser.add_argument("--cache_filename", default="data/saved.pkl", type=str)
     parser.add_argument("--use_cache", default=0, type=int)
     parser.add_argument("--num_workers", default=1, type=int)
 
     # training params
     parser.add_argument("--batch_size", default=2, type=int, help="Batch size for training.")
     parser.add_argument("--num_epochs", default=30, type=float, help="Total number of training epochs to perform.")
-    parser.add_argument("--eval_epoch", default=30, type=float, help="Number of steps between each evaluation.")
-    parser.add_argument('--print_epoch_interval', type=int, default=10)
+    # parser.add_argument("--eval_epoch", default=30, type=float, help="Number of steps between each evaluation.")
+    # parser.add_argument('--print_epoch_interval', type=int, default=10)
     parser.add_argument('--burn_in', type=int, default=0)
     parser.add_argument('--patience', type=int, default=8)
 

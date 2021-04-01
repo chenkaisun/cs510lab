@@ -8,7 +8,6 @@ import torch
 from torch import optim
 
 from model.load_model import get_model, load_model_from_path
-from options import read_args
 from utils import mkdir
 from torch.utils.tensorboard import SummaryWriter
 import numpy
@@ -53,9 +52,7 @@ def setup_common(args):
     model = get_model(args)
     # view_model_param(args, model)
 
-    downstream_layers = ["extractor", "bilinear", "combiner", "gnn", "msg_encoder",
-                         "query_encoder", "map2smaller", "cm_attn", 'l_filter', 'l_1', 'l_2', 'l_3', 'l_4', 'l_final',
-                         'l_5']
+    downstream_layers = ["extractor", "bilinear", "combiner", "gnn", "msg_encoder","query_encoder", "final"]
     optimizer = get_optimizer(args, model, downstream_layers)
     # print(model.named_parameters())
     # print("model", model)
