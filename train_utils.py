@@ -32,6 +32,7 @@ def get_logger(args):
 
 
 def setup_common(args):
+    print("setup_common")
     mkdir("model")
     mkdir("model/states")
 

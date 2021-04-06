@@ -25,9 +25,9 @@ def train(args, model, optimizer, data):
     # turn on debug to see anomaly like nan
     if args.debug:
         torch.autograd.set_detect_anomaly(True)
-        # train_data = train_data.instances[:4]
-        # val_data = val_data.instances[:4]
-        # test_data = test_data.instances[:4]
+        train_data.instances = train_data.instances[:20]
+        val_data.instances = val_data.instances[:20]
+        test_data.instances = test_data.instances[:20]
     train_loader = DataLoader(train_data, batch_size=args.batch_size, shuffle=False, collate_fn=collate_wrapper,
                               drop_last=False)
 

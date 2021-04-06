@@ -14,7 +14,7 @@ def read_args():
     parser.add_argument("--experiment_path", default="experiment/", type=str)
     parser.add_argument("--exp", default="bio", type=str)
     parser.add_argument("--analyze", default=0, type=int)
-    parser.add_argument("--debug", default=0, type=int, help="Using gpu or cpu", )
+    parser.add_argument("--debug", default=1, type=int, help="Using gpu or cpu", )
     parser.add_argument("--eval", action="store_true")
 
     # data
@@ -56,6 +56,7 @@ def read_args():
     parser.add_argument("--out_dim", default=14, type=float, help="Feature dim")
     parser.add_argument('--batch_norm', default=False, help="Please give a value for batch_norm")
     parser.add_argument("--dropout", default=0.1, type=float, help="Dropout")
+
 
     parser.add_argument('--g_dim', type=int, default=256, help='Number of final hidden units for graph.')
     parser.add_argument('--num_gnn_layers', type=int, default=3, help='Number of final hidden units for graph.')
