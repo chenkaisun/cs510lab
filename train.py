@@ -17,17 +17,31 @@ import numpy
 from torch.utils.tensorboard import SummaryWriter
 from utils import dump_file, mkdir
 from IPython import embed
+from data import OurDataset
 
 
 def train(args, model, optimizer, data):
-    train_data, val_data, test_data = data
+    train, val, test = data
+    #initilize new data model to prevent overwriting
+    train_data= OurDataset()
+    val_data =OurDataset()
+    test_data=OurDataset()
+
+    #split data
+    split_frac = 0.7
+    index = int(round(len(train.instances)*0.7))
 
     # turn on debug to see anomaly like nan
     if args.debug:
         torch.autograd.set_detect_anomaly(True)
-        train_data.instances = train_data.instances[:20]
-        val_data.instances = val_data.instances[:20]
-        test_data.instances = test_data.instances[:20]
+        train_data.instances = train.instances[:index]
+        val_data.instances = val.instances[index:]
+        test_data.instances = test.instances[:20]
+    else:
+        train_data.instances = train.instances[:index]
+        val_data.instances = val.instances[index:]
+        test_data.instances = test.instances[:20]
+
     train_loader = DataLoader(train_data, batch_size=args.batch_size, shuffle=False, collate_fn=collate_wrapper,
                               drop_last=False)
 
@@ -133,13 +147,13 @@ def train(args, model, optimizer, data):
 
     gc.collect()
     model.load_state_dict(torch.load(args.model_path)['model_state_dict'])
-    test_score, output = evaluate(args, model, test_data)
+    #test_score, output = evaluate(args, model, test_data)
 
-    logger.debug(f"Test Score {test_score}")
+    #logger.debug(f"Test Score {test_score}")
 
-
+    test_score =0
     # for tensorboard
-    writer.add_scalar('test', test_score, 0)
+    #writer.add_scalar('test', test_score, 0)
     writer.add_hparams(
         {'batch_size': args.batch_size, 'num_epochs': args.num_epochs,
          'plm_lr': args.plm_lr, 'lr': args.lr, 'max_grad_norm': args.max_grad_norm, 'dropout': args.dropout,

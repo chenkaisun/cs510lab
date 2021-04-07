@@ -24,6 +24,7 @@ if __name__ == '__main__':
 
     # can run on local computer
     if args.debug:
+        print("debug")
         args.plm = "prajjwal1/bert-tiny"
         args.batch_size=2
         args.num_epochs=2
