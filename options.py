@@ -52,6 +52,8 @@ def read_args():
     parser.add_argument("--use_amp", default=1, type=int, help="Using mixed precision")
 
     # model params
+    parser.add_argument("--model_type", default="", type=str, help="model_type")
+
     parser.add_argument("--in_dim", default=14, type=float, help="Feature dim")
     parser.add_argument("--out_dim", default=14, type=float, help="Feature dim")
     parser.add_argument('--batch_norm', default=False, help="Please give a value for batch_norm")

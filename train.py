@@ -143,7 +143,7 @@ def train(args, model, optimizer, data):
     writer.add_hparams(
         {'batch_size': args.batch_size, 'num_epochs': args.num_epochs,
          'plm_lr': args.plm_lr, 'lr': args.lr, 'max_grad_norm': args.max_grad_norm, 'dropout': args.dropout,
-         'model_type': args.model_type,
+         # 'model_type': args.model_type,
          },
         {'hparam/test': test_score, 'hparam/val': best_val_score})
     writer.close()
