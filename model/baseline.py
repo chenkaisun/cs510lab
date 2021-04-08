@@ -11,10 +11,10 @@ class baseline(nn.Module):
         super().__init__()
         # self.model_type = args.model_type
         self.plm = AutoModel.from_pretrained(args.plm)
-        self.criterion = LabelSmoothingCrossEntropy(reduction='sum')
+        # self.criterion = LabelSmoothingCrossEntropy(reduction='sum')
         self.criterion = nn.MultiLabelSoftMarginLoss()
         self.dropout = args.dropout
-        self.loss = torch.nn.CrossEntropyLoss()
+        # self.loss = torch.nn.CrossEntropyLoss()
         self.final = nn.Linear(args.plm_hidden_dim, args.out_dim)
 
     def forward(self, input,args):
@@ -32,9 +32,9 @@ class baseline(nn.Module):
         if in_train:
             # label smoothing
             return self.criterion(output, labels)
-            return self.loss(output, labels)
-            return torch.nn.functional.cross_entropy(output, labels)
-            return torch.nn.functional.binary_cross_entropy_with_logits(output, labels)
+            # return self.loss(output, labels)
+            # return torch.nn.functional.cross_entropy(output, labels)
+            # return torch.nn.functional.binary_cross_entropy_with_logits(output, labels)
         # return torch.argmax(F.log_softmax(output, dim=-1), dim=-1)
 
         pred_out = (torch.sigmoid(output) > 0.5).float()

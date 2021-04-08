@@ -23,13 +23,13 @@ from data import OurDataset
 def train(args, model, optimizer, data):
     train, val, test = data
     #initilize new data model to prevent overwriting
-    train_data= OurDataset()
-    val_data =OurDataset()
-    test_data=OurDataset()
+    train_data = OurDataset()
+    val_data = OurDataset()
+    test_data = OurDataset()
 
     #split data
     split_frac = 0.7
-    index = int(round(len(train.instances)*0.7))
+    index = int(round(len(train.instances)*split_frac))
 
     # turn on debug to see anomaly like nan
     if args.debug:
@@ -116,6 +116,8 @@ def train(args, model, optimizer, data):
                         scheduler.step()
                     optimizer.zero_grad()
             total_loss += loss.item()
+            if step % 50 == 0:
+                print("[{:.2f}%] {}/{}, loss: {}".format(100.0*step/len(train_loader), step, len(train_loader), loss.item()), end="\r")
 
         val_score, output = evaluate(args, model, val_data)
 

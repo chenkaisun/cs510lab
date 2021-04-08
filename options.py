@@ -28,7 +28,7 @@ def read_args():
     parser.add_argument("--num_workers", default=1, type=int)
 
     # training params
-    parser.add_argument("--batch_size", default=2, type=int, help="Batch size for training.")
+    parser.add_argument("--batch_size", default=64, type=int, help="Batch size for training.")
     parser.add_argument("--num_epochs", default=30, type=float, help="Total number of training epochs to perform.")
     # parser.add_argument("--eval_epoch", default=30, type=float, help="Number of steps between each evaluation.")
     # parser.add_argument('--print_epoch_interval', type=int, default=10)

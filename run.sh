@@ -16,7 +16,8 @@ for _max_grad_norm in 1 0; do
                 --patience 5 \
                 --max_grad_norm $_max_grad_norm \
                 --mult_mask $_mult_mask \
-                --g_mult_mask $_g_mult_mask
+                --g_mult_mask $_g_mult_mask \
+                --debug 0
 
             done
           done
