@@ -14,7 +14,7 @@ if __name__ == '__main__':
     set_seeds(args)
 
     # todo: preset everything in options.py that stay the same for this experiment, like below
-    data_dir = "data/"
+    data_dir = "/data/jinning/"
     train_file = data_dir + "allMeSH_2021.json"
     val_file = data_dir + "dev.txt"
     test_file = data_dir + "test.txt"

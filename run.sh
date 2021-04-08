@@ -5,7 +5,7 @@ for _max_grad_norm in 1 0; do
           for _g_mult_mask in 1 0; do
             for _lr in 1e-3 1e-4 1e-2; do
 
-              python main_re.py \
+              python main.py \
                 --use_cache 0 \
                 --batch_size 4 \
                 --num_epoch 15 \

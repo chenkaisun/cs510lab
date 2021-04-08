@@ -47,6 +47,7 @@ def read_args():
     parser.add_argument("--scheduler", default="linear")
     parser.add_argument("--warmup_ratio", default=0.06, type=float, help="Warm up ratio for Adam.")
 
+    parser.add_argument("--paralell", action="store_true", help="Use paralell multiple gpu")
     parser.add_argument("--n_gpu", default=1, type=int, help="Number of gpu", )
     parser.add_argument("--use_gpu", default=1, type=int, help="Using gpu or cpu", )
     parser.add_argument("--use_amp", default=1, type=int, help="Using mixed precision")
