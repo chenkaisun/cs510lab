@@ -20,7 +20,9 @@ if __name__ == '__main__':
     test_file = data_dir + "test.txt"
     args.model_name = "baseline"
     args.exp = "bioasp_task1_basebert"
-    args.plm = "allenai/scibert_scivocab_uncased"
+    # args.plm = "allenai/scibert_scivocab_uncased"
+    args.plm = "prajjwal1/bert-mini"
+    # args.plm = "bert-base-uncased"
 
     # can run on local computer
     if args.debug:
@@ -34,14 +36,14 @@ if __name__ == '__main__':
     print("Tokenizer loaded")
 
     train_data = OurDataset(args, train_file, tokenizer)
-    val_data, test_data = train_data, train_data
+    # val_data, test_data = train_data, train_data
 
     # set up optimizer and model, move to gpu, set up loggers
     args, model, optimizer = setup_common(args)
 
     if args.analyze:
-        model.load_state_dict(torch.load(args.model_path)['model_state_dict'])
-        test_score, output = evaluate(args, model, test_data)
-
+        # model.load_state_dict(torch.load(args.model_path)['model_state_dict'])
+        # test_score, output = evaluate(args, model, test_data)
+        pass
     else:
-        train(args, model, optimizer, (train_data, val_data, test_data))
+        train(args, model, optimizer, train_data)

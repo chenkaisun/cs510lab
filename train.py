@@ -18,29 +18,33 @@ from torch.utils.tensorboard import SummaryWriter
 from utils import dump_file, mkdir
 from IPython import embed
 from data import OurDataset
+import json
+import os
 
 
-def train(args, model, optimizer, data):
-    train, val, test = data
+def train(args, model, optimizer, train_data):
+    # train, val, test = data
     #initilize new data model to prevent overwriting
-    train_data = OurDataset()
+    # train_data = OurDataset()
     val_data = OurDataset()
-    test_data = OurDataset()
+    val_size = 10000 # We use the front 10000 as vvalidation 
+    # test_data = OurDataset()
 
     #split data
-    split_frac = 0.7
-    index = int(round(len(train.instances)*split_frac))
+    # split_frac = 0.7
+    # index = int(round(len(train.instances)*split_frac))
+    # index = len(train.instances) - 10000
 
     # turn on debug to see anomaly like nan
-    if args.debug:
-        torch.autograd.set_detect_anomaly(True)
-        train_data.instances = train.instances[:index]
-        val_data.instances = val.instances[index:]
-        test_data.instances = test.instances[:20]
-    else:
-        train_data.instances = train.instances[:index]
-        val_data.instances = val.instances[index:]
-        test_data.instances = test.instances[:20]
+    # if args.debug:
+    #     torch.autograd.set_detect_anomaly(True)
+    #     train_data.instances = train.instances[:index]
+    #     val_data.instances = val.instances[index:]
+    #     test_data.instances = test.instances[:20]
+    # else:
+    # train_data.instances = train.instances[:index]
+    val_data.instances = train_data.instances[:val_size]
+    # test_data.instances = test.instances[:20]
 
     train_loader = DataLoader(train_data, batch_size=args.batch_size, shuffle=False, collate_fn=collate_wrapper,
                               drop_last=False)
@@ -76,11 +80,19 @@ def train(args, model, optimizer, data):
     t_total = time.time()
     num_steps = 0
     logger.debug(f"{len(train_loader)} steps for each epoch")
+
+    os.makedirs("./res", exist_ok=True)
+    if os.path.exists("./res/losses.json"):
+        os.remove("./res/losses.json")
+    if os.path.exists("./res/metrics.json"):
+        os.remove("./res/metrics.json")
+
     for epoch in train_iterator:
         # logger.debug(f"Epoch {epoch}")
         t = time.time()
 
         total_loss = 0
+        losses = []
         for step, batch in enumerate(train_loader):
             # logger.debug(f"Step {step}")
             num_steps += 1
@@ -116,10 +128,17 @@ def train(args, model, optimizer, data):
                         scheduler.step()
                     optimizer.zero_grad()
             total_loss += loss.item()
+            losses.append(float(loss.cpu().detach().numpy()))
             if step % 50 == 0:
                 print("[{:.2f}%] {}/{}, loss: {}".format(100.0*step/len(train_loader), step, len(train_loader), loss.item()), end="\r")
+        
+        with open("./res/losses.json", "a") as fout:
+            json.dump(losses, fout)
 
-        val_score, output = evaluate(args, model, val_data)
+        val_score, output, precision, recall = evaluate(args, model, val_data)
+
+        with open("./res/metrics.json", "a") as fout:
+            json.dump({"precision": precision, "recall": recall, "score": val_score}, fout)
 
         if epoch > args.burn_in:
             if val_score >= best_val_score:

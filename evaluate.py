@@ -37,4 +37,4 @@ def evaluate(args, model, data):
     # preds = np.array(preds) .tolist() .tolist()
     precision, recall, score = get_prf(targets, preds, average="samples")
 
-    return score, [list(item) for item in zip(ids, preds, targets)]
+    return score, [list(item) for item in zip(ids, preds, targets)], precision, recall
